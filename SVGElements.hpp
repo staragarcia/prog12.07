@@ -82,10 +82,12 @@ namespace svg
             vector<Point> points;
     };
 
-    //RECTANGLE
-    class Rectangle : public Polygon
+    // RECTANGLE
+    class Rect : public Polygon
     {
         public:
+            Rect(const Color &fill, int x, int y, int width, int height);
+            void draw(PNGImage &img) const override;
     };
 
 }
