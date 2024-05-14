@@ -12,17 +12,18 @@ namespace svg
 
 {
                                                                         
-    vector<Point> str_to_vec(const std::string& str) {                  // Função que transforma string em vetor de pontos (criada para a Polyline)   
-        vector<Point> points;                                           // Usando o <sstring>
-        istringstream iss(str);                                           // Input é str;
-        char vírgula;
-        Point point;
-
-        while (iss >> point.x >> vírgula >> point.y) {                  // point.x <- int , virgula, point.y <- int;
-            points.push_back(point);
-        }
-
-        return points;
+    vector<Point> str_to_vec(const std::string& str) {                      // função que transforma a string num vetor de pontos
+    vector<Point> points;
+    istringstream iss(str);                                                 // str é o input
+      
+    char virg;
+    Point point;
+    while (iss >> point.x >> virg >> point.y) {                             // point.x <- int , virgula, point.y <- int;
+        points.push_back(point);
+        if (iss.peek() == ',') {                                            // esta função (peek) vê se a seguir ao ponto lido vem uma vírgula 
+            iss.ignore(); }                                                 // e se vier ignora :)
+    }
+    return points;
     }
     
 
