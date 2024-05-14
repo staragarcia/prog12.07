@@ -10,7 +10,8 @@ namespace svg
     Ellipse::Ellipse(const Color &fill,
                      const Point &center,
                      const Point &radius)
-        : fill(fill), center(center), radius(radius) {}
+        : fill(fill), center(center), radius(radius) {}    
+                                            
     
     void Ellipse::draw(PNGImage &img) const
     {
@@ -33,6 +34,7 @@ namespace svg
     }
 
     
+
     //Line !!!
     Line::Line(Color stroke, Point p1, Point p2) : Polyline(stroke, {p1,p2}) {}
     void Line::draw(PNGImage &img) const {
@@ -45,4 +47,12 @@ namespace svg
         img.draw_polygon(points, fill);
     }
 
+    //Rectangle !!!
+    Rect::Rect(const Color &fill, int x, int y, int width, int height) : Polygon(fill,  {{x, y}, {x + width-1, y}, {x + width-1, y + height-1}, {x, y + height-1}}) {}
+    void Rect::draw(PNGImage &img) const {
+    Polygon::draw(img);
+    }
+
+
 }
+    
