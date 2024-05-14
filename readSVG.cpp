@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include "SVGElements.hpp"
 #include "external/tinyxml2/tinyxml2.h"
@@ -67,13 +66,13 @@ namespace svg
             svg_elements.push_back(new Ellipse(fill, center, radius));
         }
 
-        else if (strcmp(element->Name(), "circle") == 0)                     
-            svg_elements.push_back(new Ellipse(fill, center, radius));      //Isto é o que diz no projeto: "Per each child node, an object should be dynamically
+                             
+                                                                            //Isto é o que diz no projeto: "Per each child node, an object should be dynamically
                                                                             // allocated using new for the corresponding type of SVGElement, and be stored
                                                                             // in the elements vector."                   
                                                                             // declaração da Ellipse (tá no SVGElements.cpp):
                                                                             // Ellipse::Ellipse(const Color &fill, const Point &center, const Point &radius):
-                                                                            // fill(fill), center(center), radius(radius) 
+        else if (strcmp(element->Name(), "circle") == 0)                    // fill(fill), center(center), radius(radius) 
         {
             int cx = element->IntAttribute("cx");
             int cy = element->IntAttribute("cy");
