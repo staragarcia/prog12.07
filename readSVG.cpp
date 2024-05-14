@@ -119,6 +119,18 @@ namespace svg
 
         }
 
+        else if (strcmp(element->Name(), "polygon") == 0) {   
+
+            string fill_color = element->Attribute("fill");    
+            string line_points = element->Attribute("points");
+
+            Color fill = parse_color(fill_color);   
+            vector<Point> points = str_to_vec(line_points);       
+
+            svg_elements.push_back(new Polygon(fill, points));
+
+        }
+
 
         element = element->NextSiblingElement(); // próximo elemento 
         }                
