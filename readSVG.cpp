@@ -63,16 +63,16 @@ namespace svg
             //a color também é um struct mas pode vir como hex code ou string, para isso temos a função parse_color definida em Color.cpp:
             Color fill = parse_color(fill_color);
 
-            svg_elements.push_back(new Ellipse(fill, center, radius));      // Isto é o que diz no projeto: "Per each child node, an object should be dynamically 
+            svg_elements.push_back(new Ellipse(fill, center, radius));
+        }
+
+        else if (strcmp(element->Name(), "circle") == 0)                     
+            svg_elements.push_back(new Ellipse(fill, center, radius));      //Isto é o que diz no projeto: "Per each child node, an object should be dynamically
                                                                             // allocated using new for the corresponding type of SVGElement, and be stored
                                                                             // in the elements vector."                   
                                                                             // declaração da Ellipse (tá no SVGElements.cpp):
                                                                             // Ellipse::Ellipse(const Color &fill, const Point &center, const Point &radius):
-                                                                            // fill(fill), center(center), radius(radius)                                                       
-        }
-
-
-        else if (strcmp(element->Name(), "circle") == 0)
+                                                                            // fill(fill), center(center), radius(radius) 
         {
             int cx = element->IntAttribute("cx");
             int cy = element->IntAttribute("cy");
@@ -131,8 +131,24 @@ namespace svg
 
         }
 
+        else if (strcmp(element->Name(), "rect") == 0) {   
+          
+            int x = element->IntAttribute("x");
+            int y = element->IntAttribute("y");
+            int rwidth = element->IntAttribute("width");
+            int rheight = element->IntAttribute("height");
+            string fill_color = element->Attribute("fill");
+        
+            Color fill = parse_color(fill_color); 
+
+            svg_elements.push_back(new Rect(fill, x, y, rwidth, rheight));
+        }
+
+
 
         element = element->NextSiblingElement(); // próximo elemento 
+
+
         }                
     }
-}  
+}                  
