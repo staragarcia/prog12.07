@@ -33,12 +33,16 @@ namespace svg
     }
 
     
-
     //Line !!!
     Line::Line(Color stroke, Point p1, Point p2) : Polyline(stroke, {p1,p2}) {}
     void Line::draw(PNGImage &img) const {
         Polyline::draw(img);
     }
 
+    //Polygon !!!
+    Polygon::Polygon(const Color &fill, const std::vector<Point> &points) : fill(fill), points(points) {}
+    void Polygon::draw(PNGImage &img) const {
+        img.draw_polygon(points, fill);
+    }
+
 }
-    
