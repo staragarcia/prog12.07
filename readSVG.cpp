@@ -2,6 +2,7 @@
 #include "SVGElements.hpp"
 #include "external/tinyxml2/tinyxml2.h"
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
 using namespace svg;
@@ -11,7 +12,7 @@ namespace svg
 
 {
                                                                         
-    vector<Point> str_to_vec(const std::string& str) {                      // função que transforma a string num vetor de pontos
+    vector<Point> str_to_vec(const string& str) {                      // função que transforma a string num vetor de pontos
     vector<Point> points;
     istringstream iss(str);                                                 // str é o input
       
@@ -106,22 +107,28 @@ namespace svg
             }
 
 
-            else if ( coiso.tipo == "rotate" ) {
-                string trans_origin = element->Attribute("transform-origin");
-                Point origin;
-                istringstream iss(trans_origin);
-                char space = ' ';                                       
-                iss >> origin.x >> space >> origin.y; 
-                center.rotate(center, coiso.argumentos[0]);
-            }             
+            else if (coiso.tipo == "rotate") {
+            Point origin = {0, 0};
+                const char* trans_origin = element->Attribute("transform-origin");
+                if (trans_origin) {
+                    istringstream iss(trans_origin);
+                    iss >> origin.x >> origin.y; }
+            center = center.rotate(origin, coiso.argumentos[0]);
+            } 
 
             else if ( coiso.tipo == "scale" ) {
-                string trans_origin = element->Attribute("transform-origin");
-                Point origin;
-                istringstream iss(trans_origin);
-                char space = ' ';
-                iss >> origin.x >> space >> origin.y; 
-                center.scale(center, coiso.argumentos[0]);
+            Point origin = {0, 0};
+                const char* trans_origin = element->Attribute("transform-origin");
+                if (trans_origin) {
+                    istringstream iss(trans_origin);
+                    iss >> origin.x >> origin.y; }
+                
+                    int scale_factor = coiso.argumentos[0];
+                    if (scale_factor >= 1) {
+                        radius.x *= scale_factor;
+                        radius.y *= scale_factor;
+                    center = center.scale(origin, scale_factor);
+                    }
                                 
                 }
 
@@ -154,22 +161,27 @@ namespace svg
             }
 
 
-            else if ( coiso.tipo == "rotate" ) {
-                string trans_origin = element->Attribute("transform-origin");
-                Point origin;
-                istringstream iss(trans_origin);
-                char space = ' ';                                           //Inês ajudou 👏
-                iss >> origin.x >> space >> origin.y; 
-                center.rotate(center, coiso.argumentos[0]);
-            }             
+            else if (coiso.tipo == "rotate") {
+            Point origin = {0, 0};
+                const char* trans_origin = element->Attribute("transform-origin");
+                if (trans_origin) {
+                    istringstream iss(trans_origin);
+                    iss >> origin.x >> origin.y; }
+            center = center.rotate(origin, coiso.argumentos[0]);
+            }          
 
             else if ( coiso.tipo == "scale" ) {
-                string trans_origin = element->Attribute("transform-origin");
-                Point origin;
-                istringstream iss(trans_origin);
-                char space = ' ';
-                iss >> origin.x >> space >> origin.y; 
-                center.scale(center, coiso.argumentos[0]);
+            Point origin = {0, 0};
+                const char* trans_origin = element->Attribute("transform-origin");
+                if (trans_origin) {
+                    istringstream iss(trans_origin);
+                    iss >> origin.x >> origin.y; }
+                
+                    int scale_factor = coiso.argumentos[0];
+                    if (scale_factor >= 1) {
+                        r *= scale_factor;
+                    center = center.scale(origin, scale_factor);
+                    }
                                 
                 }
 
@@ -198,6 +210,31 @@ namespace svg
                 point = point.translate({coiso.argumentos[0], coiso.argumentos[1]});
                 }
             }
+
+            else if (coiso.tipo == "rotate") {
+                Point origin = {0, 0};
+                const char* trans_origin = element->Attribute("transform-origin");
+                if (trans_origin) {
+                    istringstream iss(trans_origin);
+                    iss >> origin.x >> origin.y; 
+                }
+                for (Point& point : points) {
+                point = point.rotate(origin, coiso.argumentos[0]);
+                }
+            } 
+
+            else if (coiso.tipo == "scale") {
+    Point origin = {0, 0};
+    const char* trans_origin = element->Attribute("transform-origin");
+    if (trans_origin) {
+        istringstream iss(trans_origin);
+        iss >> origin.x >> origin.y; 
+    }
+    for (Point& point : points) {
+        point = point.scale(origin, coiso.argumentos[0]);
+    }
+}
+
         }
 
             
@@ -229,6 +266,31 @@ namespace svg
                 p2 = p2.translate({coiso.argumentos[0], coiso.argumentos[1]});
                 
             }
+
+            else if (coiso.tipo == "rotate") {
+                Point origin = {0, 0};
+                const char* trans_origin = element->Attribute("transform-origin");
+                if (trans_origin) {
+                    istringstream iss(trans_origin);
+                    iss >> origin.x >> origin.y; 
+                }
+                p1 = p1.rotate(origin, coiso.argumentos[0]);
+                p2 = p2.rotate(origin, coiso.argumentos[0]);
+            }
+
+            if (coiso.tipo == "scale") {
+            int scale_factor = coiso.argumentos[0];
+            if (scale_factor >= 1) {
+                Point origin = {0, 0};
+                const char* trans_origin = element->Attribute("transform-origin");
+                if (trans_origin) {
+                    istringstream iss(trans_origin);
+                    iss >> origin.x >> origin.y; 
+                }
+                p1 = p1.scale(origin, scale_factor);
+                p2 = p2.scale(origin, scale_factor);
+            }
+        }
         }
             
             svg_elements.push_back(new Line(stroke, p1, p2));
@@ -253,6 +315,34 @@ namespace svg
                 point = point.translate({coiso.argumentos[0], coiso.argumentos[1]});
                 }
             }
+
+            else if (coiso.tipo == "rotate") {
+                Point origin = {0, 0};
+                const char* trans_origin = element->Attribute("transform-origin");
+                if (trans_origin) {
+                    istringstream iss(trans_origin);
+                    iss >> origin.x >> origin.y; 
+                }
+                for (Point& point : points) {
+                point = point.rotate(origin, coiso.argumentos[0]);
+                }
+                
+            }
+
+            else if (coiso.tipo == "scale") {
+            int scale_factor = coiso.argumentos[0];
+                Point origin = {0, 0};
+                const char* trans_origin = element->Attribute("transform-origin");
+                if (trans_origin) {
+                    istringstream iss(trans_origin);
+                    iss >> origin.x >> origin.y; 
+                }
+                for (Point& point : points) {
+                    point = point.scale(origin, scale_factor);
+                }
+
+            }
+
             }
 
             svg_elements.push_back(new Polygon(fill, points));
@@ -275,12 +365,51 @@ namespace svg
                 transformação coiso = extractTransform(transString);            // aplicar extractTransform a transString e guardar em coiso;
 
             if ( coiso.tipo == "translate" ) {
-                x += coiso.argumentos[0];;                                      // Translate manualmente a coordenada x
+                x += coiso.argumentos[0];                                      // Translate manualmente a coordenada x
                 y += coiso.argumentos[1];                                       // Translate manualmente a coordenada y
                 }
+
+            else if (coiso.tipo == "rotate") {
+                Point origin = {0, 0};
+                const char* trans_origin = element->Attribute("transform-origin");
+                if (trans_origin) {
+                    istringstream iss(trans_origin);
+                    iss >> origin.x >> origin.y; 
+                }
+                Point topleft = {x, y};
+                Point topright = {x + rwidth, y};
+                Point bottomleft = {x, y + rheight};
+                Point bottomright = {x + rwidth, y + rheight};
+
+                vector<Point> points;
+
+                topleft = topleft.rotate(origin, coiso.argumentos[0]);
+                topright = topright.rotate(origin, coiso.argumentos[0]);
+                bottomleft = bottomleft.rotate(origin, coiso.argumentos[0]);
+                bottomright = bottomright.rotate(origin, coiso.argumentos[0]);
+
+                svg_elements.push_back(new Polygon(fill,points));
+
+    
             }
 
-            svg_elements.push_back(new Rect(fill, x, y, rwidth, rheight));
+            else if (coiso.tipo == "scale") {
+            int scale_factor = coiso.argumentos[0];
+                Point origin = {0, 0};
+                const char* trans_origin = element->Attribute("transform-origin");
+                if (trans_origin) {
+                    istringstream iss(trans_origin);
+                    iss >> origin.x >> origin.y; 
+                }
+                rwidth =  (rwidth)*scale_factor - scale_factor +1 ;
+                rheight = (rheight)*scale_factor - scale_factor +1 ;
+                x = origin.x + scale_factor * (x - origin.x);
+                y = origin.y + scale_factor * (y - origin.y);
+
+            } 
+        }
+
+            svg_elements.push_back(new Rect(fill, x, y, rwidth-1, rheight-1));
         }
 
 
