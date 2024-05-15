@@ -17,6 +17,9 @@ namespace svg
         SVGElement();
         virtual ~SVGElement();
         virtual void draw(PNGImage &img) const = 0;
+        virtual void translate(int x, int y) = 0;
+        virtual void rotate(int v) = 0;
+        virtual void scale(int v) = 0;
     };
 
     // Declaration of namespace functions
@@ -29,11 +32,29 @@ namespace svg
     void convert(const std::string &svg_file,
                  const std::string &png_file);
 
+    class Group : public SVGElement
+    {
+    public:
+        Group();
+        ~Group();
+        void draw(PNGImage &img) const override;
+        void translate(int x, int y) override;
+        void rotate(int v) override;
+        void scale(int v) override;
+        void addElement(SVGElement *element);
+
+    private:
+        std::vector<SVGElement *> elements;
+    };
+
     class Ellipse : public SVGElement
     {
     public:
         Ellipse(const Color &fill, const Point &center, const Point &radius);
         void draw(PNGImage &img) const override;
+        void translate(int tx, int ty) override;
+        void rotate(int v) override;
+        void scale(int v) override;
 
     private:
         Color fill;
@@ -56,6 +77,9 @@ namespace svg
     public:
         Polyline(const Color &stroke, const std::vector<Point> &points);
         void draw(PNGImage &img) const override;
+        void translate(int tx, int ty) override;
+        void rotate(int v) override;
+        void scale(int v) override;
 
     private:
         Color stroke;
@@ -76,6 +100,9 @@ namespace svg
         public:
             Polygon(const Color &fill, const std::vector<Point> &points);
             void draw(PNGImage &img) const override;
+            void translate(int tx, int ty) override;
+            void rotate(int v) override;
+            void scale(int v) override;
 
         private:
             Color fill;
@@ -92,3 +119,4 @@ namespace svg
 
 }
 #endif
+
