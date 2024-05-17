@@ -370,6 +370,7 @@ namespace svg
                 }
 
             else if (coiso.tipo == "rotate") {
+                rodou = true;
                 Point origin = {0, 0};
                 const char* trans_origin = element->Attribute("transform-origin");
                 if (trans_origin) {
@@ -377,19 +378,18 @@ namespace svg
                     iss >> origin.x >> origin.y; 
                 }
                 Point topleft = {x, y};
-                Point topright = {x + rwidth, y};
-                Point bottomleft = {x, y + rheight};
-                Point bottomright = {x + rwidth, y + rheight};
+                Point topright = {x + rwidth-1, y};
+                Point bottomleft = {x, y + rheight-1};
+                Point bottomright = {x + rwidth-1, y + rheight-1};
 
                 vector<Point> points;
 
-                topleft = topleft.rotate(origin, coiso.argumentos[0]);
-                topright = topright.rotate(origin, coiso.argumentos[0]);
-                bottomleft = bottomleft.rotate(origin, coiso.argumentos[0]);
-                bottomright = bottomright.rotate(origin, coiso.argumentos[0]);
+                points.push_back(topleft.rotate(origin, coiso.argumentos[0]));
+                points.push_back(topright = topright.rotate(origin, coiso.argumentos[0]));
+                points.push_back(bottomright.rotate(origin, coiso.argumentos[0]));
+                points.push_back(bottomleft = bottomleft.rotate(origin, coiso.argumentos[0]));
 
                 svg_elements.push_back(new Polygon(fill,points));
-
     
             }
 
