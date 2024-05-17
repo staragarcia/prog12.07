@@ -3,10 +3,13 @@
 #include "external/tinyxml2/tinyxml2.h"
 #include <sstream>
 #include <algorithm>
+#include <unordered_map>
+#include <vector>
 
 using namespace std;
 using namespace svg;
 using namespace tinyxml2;
+
 
 namespace svg
 
@@ -76,7 +79,7 @@ namespace svg
         XMLElement *element = xml_elem->FirstChildElement();    // element é ponteiro para o "FirstChildElement" de xml_elem
                                                                 // se não exsitir uma FirstChild, aquela função retorna o nullptr
         while (element != nullptr) {
-    
+
         if (strcmp(element->Name(), "ellipse") == 0) {          // comparar o nome do element com "ellipse". se for igual strcmp=0, temos um ellipse element)
             int cx = element->IntAttribute("cx");
             int cy = element->IntAttribute("cy");               // fazer o IntAttribute do codigo SVG (pegar no "cx" do codigo por exemplo, relativamente ao
@@ -96,7 +99,7 @@ namespace svg
             //a color também é um struct mas pode vir como hex code ou string, para isso temos a função parse_color definida em Color.cpp:
             Color fill = parse_color(fill_color);
             
-        //MAGIA NEGRA: (em processo) FUNCIONA CARALHO LETS GOOOOOO
+        //MAGIA NEGRA: (em processo) FUNCIONA LETS GOOOOOO
         const char *trueform = element->Attribute("transform");             // Encontrar o texto do transform
         if (trueform != nullptr) {                                          // se não estiver vazio:
             string transString = trueform;                                  // guardar no transString
@@ -350,6 +353,7 @@ namespace svg
         }
 
         else if (strcmp(element->Name(), "rect") == 0) {   
+            bool rodou = false;
           
             int x = element->IntAttribute("x");
             int y = element->IntAttribute("y");
@@ -390,6 +394,7 @@ namespace svg
                 points.push_back(bottomleft = bottomleft.rotate(origin, coiso.argumentos[0]));
 
                 svg_elements.push_back(new Polygon(fill,points));
+
     
             }
 
@@ -409,7 +414,7 @@ namespace svg
             } 
         }
 
-            svg_elements.push_back(new Rect(fill, x, y, rwidth-1, rheight-1));
+            if (!rodou) svg_elements.push_back(new Rect(fill, x, y, rwidth-1, rheight-1));
         }
 
 
@@ -417,5 +422,6 @@ namespace svg
 
 
         }                
-    }
-}                  
+    }            
+
+}
